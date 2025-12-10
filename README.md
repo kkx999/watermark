@@ -20,11 +20,6 @@
 * **🌗 暗色模式**：自动跟随系统偏好，支持手动一键切换深色/浅色主题。
 * **📱 响应式设计**：完美适配桌面端与移动端，支持拖拽上传。
 
-## 📸 预览
-
-![预览截图](<img width="2553" height="1273" alt="image" src="https://github.com/user-attachments/assets/ebd7dc74-13d7-492f-b0e5-d88d3c03eec0" />)
-
-> *（请将此处图片链接替换为您实际的屏幕截图）*
 
 ## 🚀 如何使用
 
@@ -47,4 +42,14 @@
 
 1. 克隆仓库：
    ```bash
-   git clone [https://github.com/你的用户名/你的仓库名.git](https://github.com/你的用户名/你的仓库名.git)
+   git clone [https://github.com/kkx999/watermark.git](https://github.com/kkx999/watermark.git)
+
+2. 直接用浏览器打开 `index.html` 文件即可。
+
+## 📄 隐私声明
+
+本工具承诺：**不收集、不存储、不上传**用户的任何图片数据。所有的图像处理过程完全在用户的设备（浏览器）中进行。
+
+## ⚖️ 开源协议
+
+MIT License. 欢迎 Fork 和 Star！⭐️
