@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>图片水印 Pro - 在线工具</title>
+    <title>图片水印工具 - 在线</title>
     <style>
-        /* CSS 变量定义 */
+        /* --- CSS 变量定义 --- */
         :root {
             --primary: #3b82f6;
             --primary-hover: #2563eb;
@@ -20,7 +20,6 @@
             --radius: 12px;
         }
 
-        /* 暗色模式变量 */
         [data-theme="dark"] {
             --primary: #60a5fa;
             --primary-hover: #3b82f6;
@@ -34,6 +33,7 @@
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
 
+        /* --- 基础样式 --- */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-body);
@@ -46,7 +46,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* 顶部导航栏 */
         header {
             background-color: var(--bg-panel);
             padding: 15px 30px;
@@ -59,7 +58,6 @@
 
         h1 { margin: 0; font-size: 1.25rem; font-weight: 600; color: var(--text-main); }
 
-        /* 主要内容区 */
         .main-container {
             flex: 1;
             display: flex;
@@ -72,9 +70,8 @@
             box-sizing: border-box;
         }
 
-        /* 左侧控制面板 */
         .controls-panel {
-            flex: 0 0 320px;
+            flex: 0 0 340px;
             background: var(--bg-panel);
             padding: 25px;
             border-radius: var(--radius);
@@ -83,7 +80,6 @@
             transition: background-color 0.3s;
         }
 
-        /* 右侧预览区域 */
         .preview-panel {
             flex: 1;
             min-width: 300px;
@@ -100,7 +96,7 @@
             transition: background-color 0.3s;
         }
 
-        /* 通用表单元素样式 */
+        /* --- 控件样式 --- */
         .control-group { margin-bottom: 18px; }
         .control-group label { 
             display: flex; 
@@ -123,9 +119,7 @@
             transition: border-color 0.2s;
         }
 
-        input[type="text"]:focus, select:focus {
-            border-color: var(--primary);
-        }
+        input[type="text"]:focus, select:focus { border-color: var(--primary); }
 
         input[type="range"] {
             -webkit-appearance: none;
@@ -146,98 +140,100 @@
         }
         input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); }
 
-        /* 上传区域 */
         .upload-area {
             border: 2px dashed var(--border-color);
             border-radius: 8px;
-            padding: 30px 20px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             background-color: var(--input-bg);
             transition: all 0.3s;
         }
+        .upload-area.small { padding: 10px; margin-bottom: 15px; font-size: 0.9em;}
         .upload-area:hover {
             border-color: var(--primary);
             background-color: rgba(59, 130, 246, 0.05);
         }
         .upload-icon { font-size: 24px; margin-bottom: 10px; color: var(--text-secondary); display: block;}
 
-        /* 按钮 */
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
+        /* 模式切换 Tab */
+        .mode-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: var(--input-bg);
+            padding: 4px;
+            border-radius: 8px;
+        }
+        .mode-tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .mode-tab.active {
+            background: var(--bg-panel);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 按钮组 - 使用 CSS Grid 实现绝对对称 */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 1:1 等分 */
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-primary, .btn-secondary {
+            width: 100%; /* 填满格子 */
             border: none;
             padding: 12px;
             border-radius: 8px;
-            width: 100%;
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.2s;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap; 
         }
+        .btn-primary { background-color: var(--primary); color: white; }
         .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--input-bg); color: var(--text-secondary); border: 1px solid var(--border-color);}
+        .btn-secondary:hover { background-color: var(--border-color); }
 
-        /* 画布样式 */
+
         canvas {
             max-width: 100%;
             max-height: 80vh;
             border: 1px solid var(--border-color);
-            background-image: 
-                linear-gradient(45deg, #ccc 25%, transparent 25%), 
-                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #ccc 75%), 
-                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
             background-size: 20px 20px;
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
             background-color: #fff;
+            transition: opacity 0.2s;
         }
 
         .empty-tip { color: var(--text-secondary); text-align: center; line-height: 1.6; }
 
         /* 开关 Switch */
-        .theme-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
+        .theme-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .theme-switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* 底部 Footer */
-        footer {
-            text-align: center;
-            padding: 15px;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--bg-panel);
-        }
-
-        @media (max-width: 768px) {
-            .controls-panel { flex: 0 0 100%; }
-        }
+        footer { text-align: center; padding: 15px; color: var(--text-secondary); font-size: 0.8rem; border-top: 1px solid var(--border-color); background-color: var(--bg-panel); }
+        @media (max-width: 768px) { .controls-panel { flex: 0 0 100%; } }
     </style>
 </head>
 <body>
@@ -249,9 +245,8 @@
                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
                 <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
-            <h1>图片水印 Pro</h1>
+            <h1>图片水印</h1>
         </div>
-        
         <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-size:12px; color:var(--text-secondary)">暗色模式</span>
             <label class="theme-switch">
@@ -262,36 +257,70 @@
     </header>
 
     <div class="main-container">
-        <div class="controls-panel">
+        <div class="controls-panel" id="controlForm">
             <div class="upload-area" onclick="document.getElementById('uploadInput').click()">
-                <div class="upload-icon">
+                 <div class="upload-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
                 </div>
-                <span>点击或拖拽上传图片</span>
+                <span>点击或拖拽上传主图</span>
                 <input type="file" id="uploadInput" accept="image/*" style="display: none" onchange="handleImageUpload(this)">
             </div>
 
-            <div class="control-group">
-                <label>水印内容</label>
-                <input type="text" id="watermarkText" value="仅供内部使用 @User" oninput="drawWatermark()">
+            <div class="mode-tabs">
+                <div class="mode-tab active" id="tab-text" onclick="handleTabClick('text')">文字模式</div>
+                <div class="mode-tab" id="tab-image" onclick="handleTabClick('image')">Logo模式</div>
             </div>
 
             <div class="control-group">
-                <label>水印模式</label>
+                <label>水印位置/模式</label>
                 <select id="drawMode" onchange="drawWatermark()">
                     <option value="tiled">全屏防盗平铺</option>
                     <option value="center">居中显示</option>
-                    <option value="bottom-right">右下角署名</option>
+                    <option value="bottom-right">右下角</option>
                 </select>
             </div>
 
-            <div class="control-group">
-                <label><span>字体大小</span> <span id="fontSizeVal">40px</span></label>
-                <input type="range" id="fontSize" min="10" max="200" value="40" oninput="updateVal('fontSizeVal', this.value + 'px'); drawWatermark()">
+            <div id="textControls">
+                <div class="control-group">
+                    <label>水印文字</label>
+                    <input type="text" id="watermarkText" value="仅供内部使用 @User" oninput="drawWatermark()">
+                </div>
+                 <div class="control-group">
+                    <label>字体</label>
+                    <select id="fontFamily" onchange="drawWatermark()">
+                        <option value="sans-serif">默认黑体 (Sans-serif)</option>
+                        <option value="'Times New Roman', serif">宋体/衬线 (Serif)</option>
+                        <option value="'Courier New', monospace">等宽字体 (Monospace)</option>
+                        <option value="cursive">手写体 (Cursive)</option>
+                        <option value="fantasy">艺术体 (Fantasy)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label><span>字体大小</span> <span id="fontSizeVal">40px</span></label>
+                    <input type="range" id="fontSize" min="10" max="200" value="40" oninput="updateVal('fontSizeVal', this.value + 'px'); drawWatermark()">
+                </div>
+                <div class="control-group">
+                    <label>文字颜色</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="color" id="textColor" value="#000000" oninput="drawWatermark()" style="height:40px; width:50px; padding:0; border:none; background:none;">
+                        <input type="text" id="colorHex" value="#000000" readonly style="flex:1; background:var(--input-bg); color:var(--text-secondary);">
+                    </div>
+                </div>
+            </div>
+
+            <div id="imageControls" style="display: none;">
+                <div class="upload-area small" onclick="document.getElementById('logoInput').click()" id="logoUploadBtn">
+                    <span>点击上传 Logo 图片 (PNG最佳)</span>
+                    <input type="file" id="logoInput" accept="image/*" style="display: none" onchange="handleLogoUpload(this)">
+                </div>
+                 <div class="control-group">
+                    <label><span>Logo 大小缩放</span> <span id="logoScaleVal">100%</span></label>
+                    <input type="range" id="logoScale" min="10" max="300" value="100" oninput="updateVal('logoScaleVal', this.value + '%'); drawWatermark()">
+                </div>
             </div>
 
             <div class="control-group">
@@ -305,26 +334,27 @@
             </div>
 
             <div class="control-group">
-                <label><span>平铺密度</span> <span id="spaceVal">200</span></label>
-                <input type="range" id="spacing" min="50" max="600" value="200" oninput="updateVal('spaceVal', this.value); drawWatermark()">
+                <label><span>平铺间距</span> <span id="spaceVal">200</span></label>
+                <input type="range" id="spacing" min="50" max="800" value="200" oninput="updateVal('spaceVal', this.value); drawWatermark()">
             </div>
 
-            <div class="control-group">
-                <label>文字颜色</label>
-                <div style="display:flex; gap:10px;">
-                    <input type="color" id="textColor" value="#000000" oninput="drawWatermark()" style="height:40px; width:50px; padding:0; border:none; background:none;">
-                    <input type="text" id="colorHex" value="#000000" readonly style="flex:1; background:var(--input-bg); color:var(--text-secondary);">
-                </div>
+            <div class="action-buttons">
+                <button type="button" class="btn-secondary" onclick="resetSettings()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px">
+                        <path d="M2.5 2v6h6M21.5 22v-6h-6"/>
+                        <path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/>
+                    </svg>
+                    重置设置
+                </button>
+                <button type="button" class="btn-primary" onclick="downloadImage()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px">
+                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    下载图片
+                </button>
             </div>
-
-            <button class="btn-primary" onclick="downloadImage()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right:5px;">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                下载处理后的图片
-            </button>
         </div>
 
         <div class="preview-panel" id="dropZone">
@@ -343,17 +373,36 @@
     </div>
 
     <footer>
-        图片水印 Pro v1.0 &copy; 2026
+        图片水印 v1.0 &copy; 2026 KK
     </footer>
 
     <script>
-        // --- 核心逻辑 ---
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const emptyState = document.getElementById('emptyState');
         let originalImage = null;
+        let logoImage = null;
+        let currentMode = 'text';
 
-        // 1. 拖拽上传支持
+        // --- 1. 模式切换 ---
+        function handleTabClick(mode) {
+            updateModeUI(mode);
+            drawWatermark();
+        }
+
+        function updateModeUI(mode) {
+            currentMode = mode;
+            // 更新 Tab 样式
+            document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+            const activeTab = document.getElementById(`tab-${mode}`);
+            if(activeTab) activeTab.classList.add('active');
+            
+            // 切换面板显示
+            document.getElementById('textControls').style.display = mode === 'text' ? 'block' : 'none';
+            document.getElementById('imageControls').style.display = mode === 'image' ? 'block' : 'none';
+        }
+
+        // --- 2. 图片上传处理 ---
         const dropZone = document.getElementById('dropZone');
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--primary)'; });
         dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.borderColor = 'transparent'; });
@@ -370,13 +419,12 @@
         function handleFiles(file) {
             if (!file.type.match('image.*')) return alert('请上传图片文件');
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = () => {
                     originalImage = img;
                     canvas.width = img.width;
                     canvas.height = img.height;
-                    
                     emptyState.style.display = 'none';
                     canvas.style.display = 'block';
                     drawWatermark();
@@ -386,59 +434,103 @@
             reader.readAsDataURL(file);
         }
 
-        // 2. 绘制逻辑
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (!file.type.match('image.*')) return alert('请上传图片作为Logo');
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        logoImage = img;
+                        document.getElementById('logoUploadBtn').innerHTML = `<span>已选择 Logo: ${file.name}</span>`;
+                        drawWatermark();
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- 3. 核心绘制逻辑 ---
         function drawWatermark() {
             if (!originalImage) return;
 
-            const text = document.getElementById('watermarkText').value;
-            const size = parseInt(document.getElementById('fontSize').value);
-            const opacity = parseFloat(document.getElementById('opacity').value);
-            const color = document.getElementById('textColor').value;
-            const rotate = parseInt(document.getElementById('rotation').value);
-            const spacing = parseInt(document.getElementById('spacing').value);
-            const mode = document.getElementById('drawMode').value;
-
-            document.getElementById('colorHex').value = color;
+            // 获取值时增加容错，防止转换失败
+            let opacity = 0.3, rotate = -30, spacing = 200, mode = 'tiled';
+            try {
+                opacity = parseFloat(document.getElementById('opacity').value);
+                rotate = parseInt(document.getElementById('rotation').value);
+                spacing = parseInt(document.getElementById('spacing').value);
+                mode = document.getElementById('drawMode').value;
+            } catch(e) { console.error("读取参数失败", e); }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(originalImage, 0, 0);
 
             ctx.save();
-            ctx.font = `${size}px sans-serif`;
-            ctx.fillStyle = color;
             ctx.globalAlpha = opacity;
-            ctx.textBaseline = 'middle';
-            ctx.textAlign = 'center';
 
-            if (mode === 'tiled') {
-                const diag = Math.sqrt(canvas.width**2 + canvas.height**2);
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate(rotate * Math.PI / 180);
-                ctx.translate(-diag, -diag);
+            if (currentMode === 'text') {
+                const text = document.getElementById('watermarkText').value;
+                const size = parseInt(document.getElementById('fontSize').value);
+                const color = document.getElementById('textColor').value;
+                const fontFamily = document.getElementById('fontFamily').value;
+                document.getElementById('colorHex').value = color; // 同步HEX显示
+                
+                ctx.font = `${size}px ${fontFamily}`;
+                ctx.fillStyle = color;
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
 
-                for (let x = 0; x < diag * 2; x += spacing) {
-                    for (let y = 0; y < diag * 2; y += spacing / 2) {
-                        const offsetX = (y / (spacing/2)) % 2 === 0 ? 0 : spacing / 2;
-                        ctx.fillText(text, x + offsetX, y);
-                    }
-                }
-            } else if (mode === 'center') {
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate(rotate * Math.PI / 180);
-                ctx.fillText(text, 0, 0);
-            } else if (mode === 'bottom-right') {
-                ctx.translate(canvas.width - size, canvas.height - size);
-                ctx.textAlign = 'right';
-                ctx.fillText(text, 0, 0);
+                drawContent(mode, rotate, spacing, (x, y) => {
+                    ctx.fillText(text, x, y);
+                });
+
+            } else if (currentMode === 'image' && logoImage) {
+                const scale = parseInt(document.getElementById('logoScale').value) / 100;
+                const logoW = logoImage.width * scale;
+                const logoH = logoImage.height * scale;
+
+                drawContent(mode, rotate, spacing, (x, y) => {
+                    ctx.drawImage(logoImage, x - logoW/2, y - logoH/2, logoW, logoH);
+                });
             }
 
             ctx.restore();
         }
 
+        function drawContent(mode, rotate, spacing, drawCallback) {
+            if (mode === 'tiled') {
+                const diag = Math.sqrt(canvas.width**2 + canvas.height**2);
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(rotate * Math.PI / 180);
+                ctx.translate(-diag, -diag);
+                for (let x = -spacing; x < diag * 2 + spacing; x += spacing) {
+                    for (let y = -spacing; y < diag * 2 + spacing; y += spacing / 2) {
+                        const offsetX = (y / (spacing/2)) % 2 === 0 ? 0 : spacing / 2;
+                        drawCallback(x + offsetX, y);
+                    }
+                }
+            } else if (mode === 'center') {
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(rotate * Math.PI / 180);
+                drawCallback(0, 0);
+            } else if (mode === 'bottom-right') {
+                const margin = Math.min(canvas.width, canvas.height) * 0.05; 
+                ctx.translate(canvas.width - margin, canvas.height - margin);
+                ctx.rotate(rotate * Math.PI / 180);
+                if(currentMode === 'text') ctx.textAlign = 'right';
+                drawCallback(0, 0);
+            }
+        }
+
+
+        // --- 4. 辅助功能 ---
         function downloadImage() {
-            if (!originalImage) return alert('请先上传图片');
+            if (!originalImage) return alert('请先上传主图');
             const link = document.createElement('a');
-            link.download = 'watermarked.png';
+            link.download = `watermarked_v1.0_${new Date().getTime()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
@@ -447,20 +539,66 @@
             document.getElementById(id).innerText = val;
         }
 
-        // --- 暗色模式切换逻辑 ---
-        const toggle = document.getElementById('themeToggle');
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            toggle.checked = true;
-            document.documentElement.setAttribute('data-theme', 'dark');
+        // --- 5. 增强版重置功能 ---
+        function resetSettings() {
+            try {
+                // 重置文字
+                document.getElementById('watermarkText').value = "仅供内部使用 @User";
+                
+                // 重置下拉菜单
+                document.getElementById('drawMode').value = "tiled";
+                document.getElementById('fontFamily').value = "sans-serif";
+                
+                // 重置滑块和显示值
+                document.getElementById('fontSize').value = 40; 
+                updateVal('fontSizeVal', '40px');
+                
+                document.getElementById('opacity').value = 0.3; 
+                updateVal('opacityVal', '30%');
+                
+                document.getElementById('rotation').value = -30; 
+                updateVal('rotVal', '-30°');
+                
+                document.getElementById('spacing').value = 200; 
+                updateVal('spaceVal', '200');
+
+                document.getElementById('logoScale').value = 100; 
+                updateVal('logoScaleVal', '100%');
+                
+                // 重置颜色
+                document.getElementById('textColor').value = "#000000";
+                document.getElementById('colorHex').value = "#000000";
+                
+                // 重置Logo变量和UI
+                logoImage = null;
+                const logoInput = document.getElementById('logoInput');
+                logoInput.value = ''; // 清空 input value
+                logoInput.type = 'text'; // 强制转换类型清除缓存 (Hack)
+                logoInput.type = 'file'; // 恢复
+                document.getElementById('logoUploadBtn').innerHTML = '<span>点击上传 Logo 图片 (PNG最佳)</span>';
+
+                // 强制切回文字模式
+                updateModeUI('text');
+
+                // 视觉反馈：闪烁画布
+                canvas.style.opacity = '0.5';
+                setTimeout(() => canvas.style.opacity = '1', 200);
+
+                // 最后重绘
+                drawWatermark();
+                
+            } catch (e) {
+                console.error("重置出错:", e);
+                alert("重置失败，请刷新页面");
+            }
         }
 
-        toggle.addEventListener('change', function(e) {
-            if (e.target.checked) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-        });
+        // 暗色模式
+        const toggle = document.getElementById('themeToggle');
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            toggle.checked = true; document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        toggle.addEventListener('change', (e) => document.documentElement.setAttribute('data-theme', e.target.checked ? 'dark' : 'light'));
     </script>
 </body>
 </html>
