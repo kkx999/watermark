@@ -42,7 +42,7 @@
 
 1. 克隆仓库：
    ```bash
-   git clone [https://github.com/kkx999/watermark.git](https://github.com/kkx999/watermark.git)
+   git clone https://github.com/kkx999/watermark.git
 
 2. 直接用浏览器打开 `index.html` 文件即可。
 
